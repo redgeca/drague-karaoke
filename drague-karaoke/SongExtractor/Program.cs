@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using KaraokeObjectsLibrary;
 using System.Collections.Generic;
+using System.IO;
 
 namespace SongExtractor
 {
@@ -67,6 +68,7 @@ namespace SongExtractor
             String localRepository = System.Configuration.ConfigurationManager.AppSettings[LOCAL_REPOSITORY];
             String fields = System.Configuration.ConfigurationManager.AppSettings[FIELDS];
 
+            List<Category> categoriesList = new List<Category>();
             int pageNumber = 1;
             List<Category> categoryList = getCategories(remoteRepository, pageNumber);
             while (categoryList.Count > 0)
@@ -74,14 +76,25 @@ namespace SongExtractor
                 pageNumber++;
                 foreach (Category category in categoryList)
                 {
+                    categoriesList.Add(category);
                     Console.WriteLine("Category " + category.mName);
                 }
 
                 categoryList = getCategories(remoteRepository, pageNumber);
             }
 
+            JsonSerializer serializer = new JsonSerializer();
+
+            using(StreamWriter sw = new StreamWriter(@"d:\categories.txt"))
+            using(JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, categoriesList);
+                // {"ExpiryDate":new Date(1230375600000),"Price":0}
+            }
+
             Console.WriteLine("");
 
+            List<Song> songsList = new List<Song>();
             pageNumber = 1;
             List<Song> songList = getSongs(remoteRepository, pageNumber);
             while (songList.Count > 0)
@@ -89,12 +102,24 @@ namespace SongExtractor
                 pageNumber++;
                 foreach (Song song in songList)
                 {
-                    Console.WriteLine("Song : " + song.mTitle + "   : Tag : " + song.mTagName);
+//                    if (song.mTagName == null)
+//                    {
+                        songsList.Add(song);
+                        Console.WriteLine("Song : " + song.mTitle + "   : Category : " + song.mCategory);
+//                    }
                 }
 
                 songList = getSongs(remoteRepository, pageNumber);
             }
 
+            using (StreamWriter sw = new StreamWriter(@"d:\songs.txt"))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, songsList);
+                // {"ExpiryDate":new Date(1230375600000),"Price":0}
+            }
+
+            Console.WriteLine("Total Number of songs : " + songsList.Count);
             System.Console.ReadLine();
         }
     }

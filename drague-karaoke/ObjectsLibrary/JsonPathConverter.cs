@@ -34,8 +34,10 @@ namespace KaraokeObjectsLibrary
                     if (t != null && t.Type == JTokenType.Object)
                     {
                         JProperty prop1 = (JProperty) t.First;
-                        tempObject = (JObject) (prop1.Value);
-                        jsonPath = path;
+                        if (prop1 != null)
+                        {
+                            tempObject = (JObject)(prop1.Value);
+                        }
                     }
                 }
                 jsonPath = jsonPaths.Last<String>();
