@@ -99,7 +99,6 @@ namespace SongExtractor
             List<Song> songList = getSongs(remoteRepository, pageNumber);
 
             //  Adding a comment
-            // Adding another comment
             while (songList.Count > 0)
             {
                 pageNumber++;
