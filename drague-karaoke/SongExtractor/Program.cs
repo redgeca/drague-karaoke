@@ -94,13 +94,13 @@ namespace SongExtractor
 
             Console.WriteLine("");
 
-                pageNumber++;
-                foreach (Song song
             List<Song> songsList = new List<Song>();
             pageNumber = 1;
             List<Song> songList = getSongs(remoteRepository, pageNumber);
             while (songList.Count > 0)
-            { in songList)
+            {
+                pageNumber++;
+                foreach (Song song in songList)
                 {
 //                    if (song.mTagName == null)
 //                    {
