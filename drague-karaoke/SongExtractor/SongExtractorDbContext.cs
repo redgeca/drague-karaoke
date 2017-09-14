@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SongExtractor
 {
+    /*
     class SongExtractorDbContext : DbContext
     {
         public DbSet<Song> Songs { get; set; }
@@ -20,4 +21,5 @@ namespace SongExtractor
         }
 
     }
+    */
 }

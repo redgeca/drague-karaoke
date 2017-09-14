@@ -17,8 +17,7 @@ namespace KaraokeObjectsLibrary
             JObject jo = JObject.Load(reader);
             object targetObj = Activator.CreateInstance(objectType);
 
-            foreach (PropertyInfo prop in objectType.GetProperties()
-                                                    .Where(p => p.CanRead && p.CanWrite))
+            foreach (PropertyInfo prop in objectType.GetProperties().Where(p => p.CanRead && p.CanWrite))
             {
                 JsonPropertyAttribute att = prop.GetCustomAttributes(true)
                                                 .OfType<JsonPropertyAttribute>()

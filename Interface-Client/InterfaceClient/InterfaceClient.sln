@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceClient", "InterfaceClient\InterfaceClient.csproj", "{1F30A43B-42E2-4FE9-8C91-2997056E4A66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InterfaceClient.Tests", "InterfaceClient.Tests\InterfaceClient.Tests.csproj", "{18AB7745-ABE5-4A47-B592-AD55BABD13CA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F30A43B-42E2-4FE9-8C91-2997056E4A66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F30A43B-42E2-4FE9-8C91-2997056E4A66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F30A43B-42E2-4FE9-8C91-2997056E4A66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F30A43B-42E2-4FE9-8C91-2997056E4A66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18AB7745-ABE5-4A47-B592-AD55BABD13CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18AB7745-ABE5-4A47-B592-AD55BABD13CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18AB7745-ABE5-4A47-B592-AD55BABD13CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18AB7745-ABE5-4A47-B592-AD55BABD13CA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
