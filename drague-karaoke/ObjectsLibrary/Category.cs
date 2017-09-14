@@ -1,6 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace KaraokeObjectsLibrary
 {
@@ -11,5 +11,8 @@ namespace KaraokeObjectsLibrary
 
         [JsonProperty("name")]
         public String mName { get; set;  }
+
+        [Key]
+        public Guid uniqueKey { get; set; }
     }
 }

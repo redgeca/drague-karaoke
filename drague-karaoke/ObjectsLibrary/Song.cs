@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace KaraokeObjectsLibrary
 {
@@ -18,6 +19,10 @@ namespace KaraokeObjectsLibrary
 
         [JsonProperty("categories.ID")]
         public long mCategory { get; set; }
+
+        [Key]
+        public Guid uniqueKey { get; set; }
+
     }
 
 }

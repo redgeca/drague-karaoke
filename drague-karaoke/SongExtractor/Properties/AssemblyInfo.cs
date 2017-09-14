@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SongExtractor")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Oracle Corporation")]
+[assembly: AssemblyCompany("Productions Redge")]
 [assembly: AssemblyProduct("SongExtractor")]
-[assembly: AssemblyCopyright("Copyright © Oracle Corporation 2017")]
+[assembly: AssemblyCopyright("Copyright © Productions Redge 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
