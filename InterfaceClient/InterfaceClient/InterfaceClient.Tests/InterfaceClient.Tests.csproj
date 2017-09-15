@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{18AB7745-ABE5-4A47-B592-AD55BABD13CA}</ProjectGuid>
+    <ProjectGuid>{84898D48-16F1-4EF2-BB3D-578831564BAE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>InterfaceClient.Tests</RootNamespace>
@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterfaceClient\InterfaceClient.csproj">
-      <Project>{1F30A43B-42E2-4FE9-8C91-2997056E4A66}</Project>
+      <Project>{6A51C552-FC88-422D-AE89-8E2988A6C37A}</Project>
       <Name>InterfaceClient</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,19 +1,19 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>Product App</title>
+    <title>Karaoké : Le Drague</title>
 </head>
 <body>
 
     <div>
-        <h2>Toute les chansons</h2>
-        <ul id="ChansonClient" />
+        <h2>Toutes les chansons</h2>
+        <ul id="chansons" />
     </div>
     <div>
-        <h2>Recherche par Id</h2>
+        <h2>Rechecher par identifiant</h2>
         <input type="text" id="chansonId" size="5" />
         <input type="button" value="Search" onclick="find();" />
-        <p id="product" />
+        <p id="chanson" />
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
@@ -27,17 +27,17 @@
             // On success, 'data' contains a list of products.
             $.each(data, function (key, item) {
               // Add a list item for the product.
-              $('<li>', { text: formatItem(item) }).appendTo($('#ChansonClient'));
+              $('<li>', { text: formatItem(item) }).appendTo($('#chansons'));
             });
           });
     });
 
     function formatItem(item) {
-      return item.Name + ': $' + item.Price;
+      return item.Name;
     }
 
     function find() {
-      var id = $('#chansonId').val();
+        var id = $('#chansonId').val();
       $.getJSON(uri + '/' + id)
           .done(function (data) {
             $('#chanson').text(formatItem(data));

@@ -9,7 +9,6 @@ namespace InterfaceClient.Tests
         [TestMethod]
         public void TestMethod1()
         {
-//hello
         }
     }
 }
