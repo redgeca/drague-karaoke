@@ -10,15 +10,21 @@
         <ul id="chansons" />
     </div>
     <div>
-        <h2>Rechecher par identifiant</h2>
-        <input type="text" id="chansonId" size="5" />
+        <h2>Rechecher par nom</h2>
+        <div id="recherche">
+            <label>Nom de la chanson</label>
+            <input type="text" id="chansonId" size="5" />
+            <br>
+            <label>Notes additionnels</label>
+            <input type="text" id="Note" size="20" />
+        </div>
         <input type="button" value="Search" onclick="find();" />
         <p id="chanson" />
     </div>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
     <script>
-    var uri = 'api/chansons';
+        var uri = 'api/chansons';
 
     $(document).ready(function () {
       // Send an AJAX request
@@ -33,7 +39,7 @@
     });
 
     function formatItem(item) {
-      return item.Name;
+      return item.m_Name;
     }
 
     function find() {
