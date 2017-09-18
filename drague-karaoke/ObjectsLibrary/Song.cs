@@ -39,7 +39,7 @@ namespace KaraokeObjectsLibrary
          *
          */
 
-        public List<Song> containsTitle(List<Song> p_songList, string p_title)
+        public List<Song> ContainsTitle(List<Song> p_songList, string p_title)
         {
             Debug.Assert(p_songList != null, "La liste de chanson doit avoir au moins une entrée valide");
             Debug.Assert(p_title != "", "Le titre doit avoir un minimum d'un caractère");
@@ -66,7 +66,7 @@ namespace KaraokeObjectsLibrary
         *
         */
 
-        public List<Song> containsArtist(List<Song> p_songList, string p_artist)
+        public List<Song> ContainsArtist(List<Song> p_songList, string p_artist)
         {
             Debug.Assert(p_songList != null, "La liste de chanson doit avoir au moins une entrée valide");
             Debug.Assert(p_artist != "", "Le nom de l'artiste doit avoir un minimum d'un caractère");
@@ -90,14 +90,21 @@ namespace KaraokeObjectsLibrary
         * 
         */
 
-        public  string ToString(List<Song> p_songList)
+        public string ToString(List<Song> p_songList)
         {
             string temp = string.Empty;
-            
-            foreach (Song s in p_songList)
+            if (p_songList.Count == 0)
             {
+                temp = "Il n'y a aucune chanson dans cette liste disponible";
+            }
+            else
+            {
+                foreach (Song s in p_songList)
+                {
 
-                temp = "Titre : " + s.mTitle + " Artiste : " + s.m_artist +  " Categorie : " + s.mCategory;
+                    temp = "Titre : " + s.mTitle + " Artiste : " + s.m_artist + " Categorie : " + s.mCategory;
+
+                }
 
             }
             return temp;
