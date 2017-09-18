@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SongExtractor", "SongExtractor\SongExtractor.csproj", "{6C5AC415-8472-4A7E-B951-F04A3E613E1F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{962FCBBC-A209-4118-A679-8BBE2F71A959} = {962FCBBC-A209-4118-A679-8BBE2F71A959}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KaraokeObjectsLibrary", "ObjectsLibrary\KaraokeObjectsLibrary.csproj", "{7C208D16-40BF-4164-855D-04464130FD60}"
 EndProject
@@ -60,5 +63,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {66316A93-CF2C-4AB4-A2A6-027080C0D783}
 	EndGlobalSection
 EndGlobal

@@ -23,6 +23,8 @@ namespace KaraokeObjectsLibrary
         [Key]
         public Guid uniqueKey { get; set; }
 
+       
+
     }
 
 }
