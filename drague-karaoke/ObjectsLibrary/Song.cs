@@ -18,8 +18,6 @@ namespace KaraokeObjectsLibrary
         [JsonProperty("artist")]
         public String m_artist { get; set; }
 
-        [JsonProperty("tags.name")]
-        public String mTagName { get; set; }
 
         [JsonProperty("categories.ID")]
         public long mCategory { get; set; }
@@ -99,7 +97,7 @@ namespace KaraokeObjectsLibrary
             foreach (Song s in p_songList)
             {
 
-                temp = "Titre : " + s.mTitle + " Artiste : " + s.m_artist + " Tag : " + s.mTagName + " Categorie : " + s.mCategory;
+                temp = "Titre : " + s.mTitle + " Artiste : " + s.m_artist +  " Categorie : " + s.mCategory;
 
             }
             return temp;
