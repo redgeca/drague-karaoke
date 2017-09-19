@@ -106,7 +106,8 @@ namespace SongExtractor
 //                    if (song.mTagName == null)
 //                    {
                         songsList.Add(song);
-                        Console.WriteLine("Song : " + song.mTitle + "   : Category : " + song.mCategory);
+                        Console.WriteLine("Song : " + song.mTitle + 
+                            "   Tag : " + song.mArtist);
 //                    }
                 }
 
