@@ -4,6 +4,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace KaraokeObjectsLibrary
 {
     [JsonConverter(typeof(JsonPathConverter))]
@@ -18,9 +20,12 @@ namespace KaraokeObjectsLibrary
         [JsonProperty("tags.name")]
         public String mArtist { get; set; }
 
-
         [JsonProperty("categories.ID")]
         public long mCategory { get; set; }
+
+        [JsonProperty("content")]
+        [NotMapped]
+        public String mContent { get; set; }
 
         [Key]
         public Guid uniqueKey { get; set; }
@@ -39,13 +44,15 @@ namespace KaraokeObjectsLibrary
          *
          */
 
-        public List<Song> ContainsTitle(List<Song> p_songList, string p_title)
+        public List<Song> containsTitle(List<Song> pSongList, string pTitle)
         {
-            Debug.Assert(p_songList != null, "La liste de chanson doit avoir au moins une entrée valide");
-            Debug.Assert(p_title != "", "Le titre doit avoir un minimum d'un caractère");
+            Debug.Assert(pSongList != null, "La liste de chanson doit avoir au moins une entrée valide");
+            Debug.Assert(pTitle != "", "Le titre doit avoir un minimum d'un caractère");
             List<Song> songList = new List<Song>();
-            foreach (Song songSuccess in p_songList)
-                if (songSuccess.mTitle.Contains(p_title))
+
+            // todo : Review this code...
+            foreach (Song songSuccess in pSongList) 
+                if (songSuccess.mTitle.Contains(pTitle))
                 {
                     songList.Add(songSuccess);
                 }
