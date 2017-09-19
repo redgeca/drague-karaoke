@@ -8,6 +8,7 @@ namespace SongExtractor
     {
         public DbSet<Song> Songs { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Artist> Artists { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

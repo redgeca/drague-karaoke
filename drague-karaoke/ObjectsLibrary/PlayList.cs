@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
+using System.ComponentModel.DataAnnotations;
+
 namespace KaraokeObjectsLibrary
 {
     class PlayList
@@ -11,6 +10,8 @@ namespace KaraokeObjectsLibrary
 
         public List<Request> mListRequest { get; set; }
 
+        [Key]
+        public Guid uniqueKey { get; set; }
 
         /*
          * Constructor

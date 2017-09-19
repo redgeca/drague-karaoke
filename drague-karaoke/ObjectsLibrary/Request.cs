@@ -1,15 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
+using System.ComponentModel.DataAnnotations;
+
 namespace KaraokeObjectsLibrary
 {
     class Request
     {
+        [Key]
+        public Guid uniqueKey { get; set; }
+
         public Song mSong { get; set; }
-        public String mNom { get; set; }
+        public String mSingerName { get; set; }
         public String mNote { get; set; }
         /*
          * AddRequest
@@ -22,18 +24,19 @@ namespace KaraokeObjectsLibrary
          * string p_note
          * Song p_song
          */
-        public void AddRequest(string p_nom, string p_note, Song p_song)
+        public void AddRequest(string pSingerName, string pNote, Song p_song)
         {
             Debug.Assert(CheckIfText(), "A customer name and a song is needed in order to proceed");
-            this.mSong = p_song;
-            this.mNom = p_nom;
-            if (p_note != "")
+            mSong = p_song;
+            mSingerName = pSingerName;
+
+            if (pNote != null && !pNote.Trim().Equals(""))
             {
-                this.mNote = p_note;
+                mNote = pNote.Trim();
             }
             else
             {
-                this.mNote = "";
+                mNote = "";
             }
 
         }
@@ -51,7 +54,7 @@ namespace KaraokeObjectsLibrary
         public bool CheckIfText()
         {
             
-            if (this.mSong == null || this.mNom == "")
+            if (this.mSong == null || this.mSingerName == "")
             {
                 return false;
             }
@@ -64,9 +67,9 @@ namespace KaraokeObjectsLibrary
 
         public override string ToString()
         {
-            StringBuilder chaine = new StringBuilder("");
-            chaine.Append("Demande par : " + this.mNom + "\nChanson:" + this.mSong + "\nNotes: " + this.mNote + "\r\n");
-            return chaine.ToString();
+            StringBuilder stringBuilder = new StringBuilder("");
+            stringBuilder.Append("Demande par : " + this.mSingerName + "\nChanson:" + this.mSong + "\nNotes: " + this.mNote + "\r\n");
+            return stringBuilder.ToString();
         }
     }
 }

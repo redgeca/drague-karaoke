@@ -18,6 +18,7 @@ namespace KaraokeObjectsLibrary
         public String mTitle { get; set; }
 
         [JsonProperty("tags.name")]
+        [NotMapped]
         public String mArtist { get; set; }
 
         [JsonProperty("categories.ID")]

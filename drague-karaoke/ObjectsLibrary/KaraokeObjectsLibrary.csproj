@@ -183,6 +183,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Artist.cs" />
     <Compile Include="Category.cs" />
     <Compile Include="JsonPathConverter.cs" />
     <Compile Include="PlayList.cs" />

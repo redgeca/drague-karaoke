@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using KaraokeObjectsLibrary;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace SongExtractor
 {
