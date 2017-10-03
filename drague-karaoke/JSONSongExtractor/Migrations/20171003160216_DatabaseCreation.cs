@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
-namespace JSONSongExtractor.Migrations
+namespace DBSetupAndDataSeed.Migrations
 {
     public partial class DatabaseCreation : Migration
     {

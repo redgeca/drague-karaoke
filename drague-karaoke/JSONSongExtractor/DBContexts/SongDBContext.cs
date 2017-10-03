@@ -4,14 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace JSONSongExtractor
+namespace DBSetupAndDataSeed
 {
     class SongDBContext : DbContext
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=drague-karaoke;Trusted_Connection=True;", 
-                b => b.MigrationsAssembly("JSONSongExtractor"));
+                b => b.MigrationsAssembly("DBSetupAndDataSeed"));
         }
 
         public DbSet<Artist> Artists { get; set; }

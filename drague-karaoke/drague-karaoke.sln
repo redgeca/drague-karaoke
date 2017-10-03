@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientInterface", "ClientIn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KaraokeCoreObjects", "KaraokeCoreObjects\KaraokeCoreObjects.csproj", "{F0DFD901-55A5-475D-93E9-3F8C0E8FBE65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JSONSongExtractor", "JSONSongExtractor\JSONSongExtractor.csproj", "{6EA84D28-DB4C-43A1-A2BE-7B8E5342D9E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBSetupAndDataSeed", "JSONSongExtractor\DBSetupAndDataSeed.csproj", "{6EA84D28-DB4C-43A1-A2BE-7B8E5342D9E5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F0DFD901-55A5-475D-93E9-3F8C0E8FBE65} = {F0DFD901-55A5-475D-93E9-3F8C0E8FBE65}
 	EndProjectSection
