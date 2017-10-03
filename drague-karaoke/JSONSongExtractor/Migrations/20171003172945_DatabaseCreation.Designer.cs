@@ -11,7 +11,7 @@ using System;
 namespace DBSetupAndDataSeed.Migrations
 {
     [DbContext(typeof(SongDBContext))]
-    [Migration("20171003160216_DatabaseCreation")]
+    [Migration("20171003172945_DatabaseCreation")]
     partial class DatabaseCreation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
