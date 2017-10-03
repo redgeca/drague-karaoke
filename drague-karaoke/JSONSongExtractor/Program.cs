@@ -1,12 +1,18 @@
-﻿using System;
+﻿
+using KaraokeCoreObjects;
+using System;
 
-namespace JSONSongExtractor
+namespace DBSetupAndDataSeed
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            using(var db = new SongDBContext())
+            {
+                db.Categories.Add(new Category());
+                db.SaveChanges();
+            }
         }
     }
 }
