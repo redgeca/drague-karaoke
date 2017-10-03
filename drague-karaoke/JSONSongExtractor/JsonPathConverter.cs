@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DBSetupAndDataSeed
+namespace SongExtractor
 {
     public class JsonPathConverter : JsonConverter
     {
