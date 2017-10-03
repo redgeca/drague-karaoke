@@ -55,7 +55,7 @@ namespace DBSetupAndDataSeed
 
                     categoryList = getCategories(remoteRepository, pageNumber);
                 }
-                */
+*/
             }
         }
     }
