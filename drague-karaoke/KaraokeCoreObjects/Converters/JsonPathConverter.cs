@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SongExtractor
+namespace KaraokeCoreObjects
 {
     public class JsonPathConverter : JsonConverter
     {
@@ -17,15 +17,30 @@ namespace SongExtractor
             JObject jo = JObject.Load(reader);
             object targetObj = Activator.CreateInstance(objectType);
 
-            foreach (PropertyInfo prop in objectType.GetProperties()
-                                                    .Where(p => p.CanRead && p.CanWrite))
+            foreach (PropertyInfo prop in objectType.GetProperties().Where(p => p.CanRead && p.CanWrite))
             {
                 JsonPropertyAttribute att = prop.GetCustomAttributes(true)
                                                 .OfType<JsonPropertyAttribute>()
                                                 .FirstOrDefault();
 
                 string jsonPath = (att != null ? att.PropertyName : prop.Name);
-                JToken token = jo.SelectToken(jsonPath);
+
+                String[] jsonPaths = jsonPath.Split('.');
+                JObject tempObject = jo;
+                foreach (String path in jsonPaths)
+                {
+                    JToken t = tempObject.SelectToken(path);
+                    if (t != null && t.Type == JTokenType.Object)
+                    {
+                        JProperty prop1 = (JProperty)t.First;
+                        if (prop1 != null)
+                        {
+                            tempObject = (JObject)(prop1.Value);
+                        }
+                    }
+                }
+                jsonPath = jsonPaths.Last<String>();
+                JToken token = tempObject.SelectToken(jsonPath);
 
                 if (token != null && token.Type != JTokenType.Null)
                 {

@@ -11,8 +11,8 @@ using System;
 namespace DBSetupAndDataSeed.Migrations
 {
     [DbContext(typeof(SongDBContext))]
-    [Migration("20171003172945_DatabaseCreation")]
-    partial class DatabaseCreation
+    [Migration("20171005144208_DBInitialization")]
+    partial class DBInitialization
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -92,7 +92,7 @@ namespace DBSetupAndDataSeed.Migrations
 
                     b.Property<int>("CategoryId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Title");
 
                     b.HasKey("Id");
 

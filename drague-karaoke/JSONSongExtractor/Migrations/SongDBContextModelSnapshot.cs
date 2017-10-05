@@ -91,7 +91,7 @@ namespace DBSetupAndDataSeed.Migrations
 
                     b.Property<int>("CategoryId");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Title");
 
                     b.HasKey("Id");
 
