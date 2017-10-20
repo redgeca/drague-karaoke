@@ -30,16 +30,15 @@ namespace TestLucene
             writer.AddDocument(getSongDocument("3", "Inaudible Melodies", "Jack Johnson", "I"));
             writer.AddDocument(getSongDocument("4", "Middle Man", "Jack Johnson", "M"));
             writer.AddDocument(getSongDocument("5", "Rêver mieux", "Daniel Bélanger", "R"));
-            writer.AddDocument(getSongDocument("5", "Sèche tes pleurs", "Daniel Bélanger", "S"));
+            writer.AddDocument(getSongDocument("6", "Sèche tes pleurs", "Daniel Bélanger", "S"));
 
             writer.Dispose();
-
 
             // Perform a search
             var searcher = new IndexSearcher(indexDirectory, false);
             var hits_limit = 1000;
 
-            BooleanQuery termQuery = parseQuery("JOHN", analyzer);
+            BooleanQuery termQuery = parseQuery("i", analyzer);
 
             searcher.SetDefaultFieldSortScoring(true, true);
             ScoreDoc[] hits= searcher.Search(termQuery, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
@@ -56,10 +55,10 @@ namespace TestLucene
         {
             Document luceneDocument = new Document();
             
-            luceneDocument.Add(new Field("Id", pId, Field.Store.NO, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Name", pName, Field.Store.YES, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Category", pCategory, Field.Store.YES, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Artist", pArtist, Field.Store.YES, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Id", pId, Field.Store.YES, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Name", pName, Field.Store.NO, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Category", pCategory, Field.Store.NO, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Artist", pArtist, Field.Store.NO, Field.Index.ANALYZED));
 
             return luceneDocument;
         }
@@ -72,6 +71,9 @@ namespace TestLucene
             var qpArtist = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Artist", analyzer);
             var qpCategory = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Category", analyzer);
 
+            qpName.AllowLeadingWildcard = true;
+            qpArtist.AllowLeadingWildcard = true;
+            qpCategory.AllowLeadingWildcard = true;
             Query queryName = qpName.Parse(prefixedTerm);
             Query queryArtist = qpArtist.Parse(prefixedTerm);
             Query queryCategory = qpCategory.Parse(prefixedTerm);
