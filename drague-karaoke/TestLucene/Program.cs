@@ -6,6 +6,7 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using System;
+using System.Collections.Generic;
 
 namespace TestLucene
 {
@@ -14,10 +15,10 @@ namespace TestLucene
         static void Main(string[] args)
         {
 
-            String indexLocation = @"D:\rejean";
+            String indexLocation = @"c:\karaoke\index";
             Directory indexDirectory = FSDirectory.Open(indexLocation);
 
-            Analyzer analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+            Analyzer analyzer = new ASCIIFoldingAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
 
             var writer = new IndexWriter(indexDirectory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
 
@@ -27,7 +28,9 @@ namespace TestLucene
             writer.AddDocument(getSongDocument("1", "Your Song", "Elton John", "Y"));
             writer.AddDocument(getSongDocument("2", "Candle in the wind", "Elton John", "C"));
             writer.AddDocument(getSongDocument("3", "Inaudible Melodies", "Jack Johnson", "I"));
-            writer.AddDocument(getSongDocument("4", "Middle Man", "Jack Johnson", "Y"));
+            writer.AddDocument(getSongDocument("4", "Middle Man", "Jack Johnson", "M"));
+            writer.AddDocument(getSongDocument("5", "Rêver mieux", "Daniel Bélanger", "R"));
+            writer.AddDocument(getSongDocument("5", "Sèche tes pleurs", "Daniel Bélanger", "S"));
 
             writer.Dispose();
 
@@ -35,36 +38,69 @@ namespace TestLucene
             // Perform a search
             var searcher = new IndexSearcher(indexDirectory, false);
             var hits_limit = 1000;
-            var parser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, new[] { "Name", "Artist" }, analyzer);
-            var query = parseQuery("Elton* john*", parser);
-            searcher.SetDefaultFieldSortScoring(true, true);
-            var hits = searcher.Search(query, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
 
-            System.Console.WriteLine("TOTO");
+            BooleanQuery termQuery = parseQuery("JOHN", analyzer);
+
+            searcher.SetDefaultFieldSortScoring(true, true);
+            ScoreDoc[] hits= searcher.Search(termQuery, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
+
+            foreach (ScoreDoc hit in hits)
+            {
+                var document = searcher.IndexReader.Document(hit.Doc);
+                System.Console.WriteLine(document.ToString());
+            }
+            System.Console.WriteLine(hits.ToString());
         }
 
         private static Document getSongDocument(String pId, String pName, String pArtist, String pCategory)
         {
             Document luceneDocument = new Document();
+            
             luceneDocument.Add(new Field("Id", pId, Field.Store.NO, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Name", pName, Field.Store.NO, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Category", pCategory, Field.Store.NO, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Artist", pArtist, Field.Store.NO, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Name", pName, Field.Store.YES, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Category", pCategory, Field.Store.YES, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Artist", pArtist, Field.Store.YES, Field.Index.ANALYZED));
 
             return luceneDocument;
         }
 
-        private static Query parseQuery(string searchQuery, QueryParser parser)
+        private static BooleanQuery parseQuery(string searchQuery, Analyzer analyzer)
         {
-            Query query;
-            try
+            var escapedTerm = QueryParser.Escape(searchQuery);
+            var prefixedTerm = String.Concat("\"", escapedTerm, "\"");
+            var qpName = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Name", analyzer);
+            var qpArtist = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Artist", analyzer);
+            var qpCategory = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Category", analyzer);
+
+            Query queryName = qpName.Parse(prefixedTerm);
+            Query queryArtist = qpArtist.Parse(prefixedTerm);
+            Query queryCategory = qpCategory.Parse(prefixedTerm);
+
+            ISet<Term> nameTerms = new HashSet<Term>();
+            ISet<Term> artistTerms = new HashSet<Term>();
+            ISet<Term> categoryTerms = new HashSet<Term>();
+
+            queryName.ExtractTerms(nameTerms);
+            queryArtist.ExtractTerms(artistTerms);
+            queryCategory.ExtractTerms(categoryTerms);
+
+            BooleanQuery termQuery = new BooleanQuery();
+            termQuery.Add(getQueryFromTerms(nameTerms), Occur.SHOULD);
+            termQuery.Add(getQueryFromTerms(artistTerms), Occur.SHOULD);
+            termQuery.Add(getQueryFromTerms(categoryTerms), Occur.SHOULD);
+
+            return termQuery;
+        }
+
+        public static BooleanQuery getQueryFromTerms(ISet<Term> pTerms)
+        {
+
+            BooleanQuery query = new BooleanQuery();
+            foreach (Term term in pTerms)
             {
-                query = parser.Parse(searchQuery.Trim());
+                query.Add(new PrefixQuery(term), Occur.MUST);
             }
-            catch (ParseException)
-            {
-                query = parser.Parse(QueryParser.Escape(searchQuery.Trim()));
-            }
+
             return query;
         }
     }
