@@ -8,6 +8,10 @@ using System.Net.Http;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Web;
+using Lucene.Net.Documents;
+using Lucene.Net.Store;
+using Lucene.Net.Analysis;
+using Lucene.Net.Index;
 
 namespace DBSetupAndDataSeed
 {
@@ -66,7 +70,7 @@ namespace DBSetupAndDataSeed
         {
             using(var db = new SongDBContext())
             {
-
+                
                 db.Database.ExecuteSqlCommand("delete from Songs");
                 db.Database.ExecuteSqlCommand("delete from Categories");
                 db.Database.ExecuteSqlCommand("delete from Artists");
@@ -135,15 +139,54 @@ namespace DBSetupAndDataSeed
                         }
 
                         db.Songs.Add(song);
+                        Console.WriteLine("Song " + int.Parse(song.Id.ToString()));
 
-                        Console.WriteLine("Song " + song.Title);
+                        //                        Console.WriteLine("Song " + song.Title);
                     }
                     db.SaveChanges();
 
                     songList = getSongs(repository, pageNumber);
                 }
+                Console.WriteLine("DONE");
 
+    
+                String indexLocation = @"c:\karaoke\index";
+                Directory indexDirectory = FSDirectory.Open(indexLocation);
+
+                Analyzer analyzer = new ASCIIFoldingAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+
+                var writer = new IndexWriter(indexDirectory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
+
+                // First, we clear index so we won't get duplicates...
+                writer.DeleteAll();
+
+                int x = 0;
+                foreach (Song song in db.Songs.ToList())
+                {
+                    writer.AddDocument(getSongDocument(song.Id.ToString(), song.Title, 
+                        song.Artist == null ? "" : song.Artist.Name, 
+                        song.Category == null ? "" : song.Category.Name));
+                    x++;
+                    Console.WriteLine("Song " + song.Title);
+                }
+                Console.WriteLine(x + " songs loaded ");
+                writer.Dispose();
             }
         }
+
+        private static Document getSongDocument(String pId, String pName, String pArtist, String pCategory)
+        {
+            Document luceneDocument = new Document();
+
+            luceneDocument.Add(new Field("Id", pId, Field.Store.YES, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Name", pName, Field.Store.NO, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Category", pCategory, Field.Store.NO, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Artist", pArtist, Field.Store.NO, Field.Index.ANALYZED));
+
+            return luceneDocument;
+        }
+
+
     }
+
 }
