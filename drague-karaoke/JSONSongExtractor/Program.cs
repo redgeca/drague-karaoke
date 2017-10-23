@@ -107,6 +107,12 @@ namespace DBSetupAndDataSeed
 
                         song.Title = HttpUtility.HtmlDecode(song.Title);
 
+                        if (artistName == null)
+                        {
+                            artistName = song.Title.Substring(song.Title.IndexOf(" par ") + 5);
+                            song.Title = song.Title.Substring(0, song.Title.IndexOf(" par "));
+                        }
+
                         var artistQuery = from a in db.Artists
                                           where EF.Functions.Like(a.Name, artistName)
                                           select a;
@@ -139,7 +145,7 @@ namespace DBSetupAndDataSeed
                         }
 
                         db.Songs.Add(song);
-                        Console.WriteLine("Song " + int.Parse(song.Id.ToString()));
+                        Console.WriteLine("Song from " + song.Artist.Name);
 
                         //                        Console.WriteLine("Song " + song.Title);
                     }
@@ -180,8 +186,8 @@ namespace DBSetupAndDataSeed
 
             luceneDocument.Add(new Field("Id", pId, Field.Store.YES, Field.Index.ANALYZED));
             luceneDocument.Add(new Field("Name", pName, Field.Store.NO, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Category", pCategory, Field.Store.NO, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Artist", pArtist, Field.Store.NO, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Category", pCategory == null ? "" : pCategory, Field.Store.NO, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Artist", pArtist == null ? "" : pArtist, Field.Store.NO, Field.Index.ANALYZED));
 
             return luceneDocument;
         }

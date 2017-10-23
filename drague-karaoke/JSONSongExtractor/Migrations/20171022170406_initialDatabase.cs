@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace DBSetupAndDataSeed.Migrations
 {
-    public partial class DBInitialization : Migration
+    public partial class initialDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,9 @@ namespace DBSetupAndDataSeed.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     ArtistId = table.Column<int>(type: "int", nullable: false),
+                    ArtistId1 = table.Column<int>(type: "int", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId1 = table.Column<int>(type: "int", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -55,11 +57,23 @@ namespace DBSetupAndDataSeed.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Songs_Artists_ArtistId1",
+                        column: x => x.ArtistId1,
+                        principalTable: "Artists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Songs_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Songs_Categories_CategoryId1",
+                        column: x => x.CategoryId1,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -121,9 +135,19 @@ namespace DBSetupAndDataSeed.Migrations
                 column: "ArtistId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Songs_ArtistId1",
+                table: "Songs",
+                column: "ArtistId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Songs_CategoryId",
                 table: "Songs",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Songs_CategoryId1",
+                table: "Songs",
+                column: "CategoryId1");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -89,7 +89,11 @@ namespace DBSetupAndDataSeed.Migrations
 
                     b.Property<int>("ArtistId");
 
+                    b.Property<int?>("ArtistId1");
+
                     b.Property<int>("CategoryId");
+
+                    b.Property<int?>("CategoryId1");
 
                     b.Property<string>("Title");
 
@@ -97,7 +101,11 @@ namespace DBSetupAndDataSeed.Migrations
 
                     b.HasIndex("ArtistId");
 
+                    b.HasIndex("ArtistId1");
+
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("CategoryId1");
 
                     b.ToTable("Songs");
                 });
@@ -125,10 +133,18 @@ namespace DBSetupAndDataSeed.Migrations
                         .HasForeignKey("ArtistId")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("KaraokeCoreObjects.Artist")
+                        .WithMany()
+                        .HasForeignKey("ArtistId1");
+
                     b.HasOne("KaraokeCoreObjects.Category", "Category")
                         .WithMany("Songs")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("KaraokeCoreObjects.Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId1");
                 });
 #pragma warning restore 612, 618
         }
