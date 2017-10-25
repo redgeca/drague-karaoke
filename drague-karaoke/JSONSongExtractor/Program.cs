@@ -70,7 +70,7 @@ namespace DBSetupAndDataSeed
         {
             using(var db = new SongDBContext())
             {
-                
+                /*
                 db.Database.ExecuteSqlCommand("delete from Songs");
                 db.Database.ExecuteSqlCommand("delete from Categories");
                 db.Database.ExecuteSqlCommand("delete from Artists");
@@ -154,7 +154,7 @@ namespace DBSetupAndDataSeed
                     songList = getSongs(repository, pageNumber);
                 }
                 Console.WriteLine("DONE");
-
+                */
     
                 String indexLocation = @"c:\karaoke\index";
                 Directory indexDirectory = FSDirectory.Open(indexLocation);
@@ -185,7 +185,7 @@ namespace DBSetupAndDataSeed
             Document luceneDocument = new Document();
 
             luceneDocument.Add(new Field("Id", pId, Field.Store.YES, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Name", pName, Field.Store.NO, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Title", pName, Field.Store.NO, Field.Index.ANALYZED));
             luceneDocument.Add(new Field("Category", pCategory == null ? "" : pCategory, Field.Store.NO, Field.Index.ANALYZED));
             luceneDocument.Add(new Field("Artist", pArtist == null ? "" : pArtist, Field.Store.NO, Field.Index.ANALYZED));
 
