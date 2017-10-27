@@ -70,7 +70,6 @@ namespace DBSetupAndDataSeed
         {
             using(var db = new SongDBContext())
             {
-                /*
                 db.Database.ExecuteSqlCommand("delete from Songs");
                 db.Database.ExecuteSqlCommand("delete from Categories");
                 db.Database.ExecuteSqlCommand("delete from Artists");
@@ -98,7 +97,7 @@ namespace DBSetupAndDataSeed
                 List<Song> songList = getSongs(repository, pageNumber);
                 while (songList.Count > 0)
                 {
-                    pageNumber++;
+                    pageNumber++; // = 123456789;
                     foreach (Song song in songList)
                     {
                         String artistName = HttpUtility.HtmlDecode(song.ArtistName);
@@ -113,35 +112,28 @@ namespace DBSetupAndDataSeed
                             song.Title = song.Title.Substring(0, song.Title.IndexOf(" par "));
                         }
 
-                        var artistQuery = from a in db.Artists
-                                          where EF.Functions.Like(a.Name, artistName)
-                                          select a;
-
-                        if (artistQuery.Count() == 0)
+                        try
                         {
-                            Artist artist = new Artist();
-                            artist.Name = artistName;
-                            db.Artists.Add(artist);
+                            Artist artist = (Artist) db.Artists.Where(a => a.Name == artistName).First();
                             song.Artist = artist;
-                            db.SaveChanges();
-                        } else
+                        }
+                        catch (InvalidOperationException e)
                         {
-                            song.Artist = artistQuery.First();
+                            Artist newArtist = new Artist();
+                            newArtist.Name = artistName;
+                            db.Artists.Add(newArtist);
+                            song.Artist = newArtist;
+                            db.SaveChanges();
                         }
 
-                        var categoryQuery = from c in db.Categories
-                                            where EF.Functions.Like(c.Name, categoryName)
-                                            select c;
-
-                        if (categoryQuery.Count() == 0)
+                        try
                         {
-                            Category category = new Category();
-                            category.Name = categoryName;
-                            db.Categories.Add(category);
+                            Category category = (Category)db.Categories.Where(c => c.Name == categoryName).First();
                             song.Category = category;
-                        } else
+                        }
+                        catch (InvalidOperationException ce)
                         {
-                            song.Category = categoryQuery.First();
+                            // Do nothing in this case;  May be we can log an error
                         }
 
                         db.Songs.Add(song);
@@ -154,7 +146,6 @@ namespace DBSetupAndDataSeed
                     songList = getSongs(repository, pageNumber);
                 }
                 Console.WriteLine("DONE");
-                */
     
                 String indexLocation = @"c:\karaoke\index";
                 Directory indexDirectory = FSDirectory.Open(indexLocation);
@@ -167,13 +158,13 @@ namespace DBSetupAndDataSeed
                 writer.DeleteAll();
 
                 int x = 0;
-                foreach (Song song in db.Songs.ToList())
+                foreach (Song song in db.Songs.Include(s => s.Artist).Include(s=> s.Category).ToList())
                 {
                     writer.AddDocument(getSongDocument(song.Id.ToString(), song.Title, 
                         song.Artist == null ? "" : song.Artist.Name, 
                         song.Category == null ? "" : song.Category.Name));
                     x++;
-                    Console.WriteLine("Song " + song.Title);
+                    Console.WriteLine("Song " + song.Title + " by " + song.Artist.Name);
                 }
                 Console.WriteLine(x + " songs loaded ");
                 writer.Dispose();

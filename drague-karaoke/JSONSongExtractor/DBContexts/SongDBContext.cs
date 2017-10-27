@@ -18,8 +18,8 @@ namespace DBSetupAndDataSeed
         {
             base.OnModelCreating(modelBuilder);
                         
-            modelBuilder.Entity<Song>().HasOne<Artist>();
-            modelBuilder.Entity<Song>().HasOne<Category>();
+//            modelBuilder.Entity<Song>().HasOne<Artist>();
+//            modelBuilder.Entity<Song>().HasOne<Category>();
         }
 
         public DbSet<Artist> Artists { get; set; }

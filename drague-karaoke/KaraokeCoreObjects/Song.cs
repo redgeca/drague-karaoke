@@ -15,11 +15,9 @@ namespace KaraokeCoreObjects
         public String Title { get; set; }
 
         public int CategoryId { get; set; }
-        [ForeignKey("CategoryId")]
         public Category Category { get; set; }
 
         public int ArtistId { get; set; }
-        [ForeignKey("ArtistId")]
         public Artist Artist { get; set; }
 
         [NotMapped]
