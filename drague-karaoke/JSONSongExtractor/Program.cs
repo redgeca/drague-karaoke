@@ -48,7 +48,7 @@ namespace DBSetupAndDataSeed
             songsClient.DefaultRequestHeaders.Accept.Add(
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-            HttpResponseMessage songsResponse = songsClient.GetAsync("?fields=title,tags,categories,content&page=" + pPageNumber).Result;
+            HttpResponseMessage songsResponse = songsClient.GetAsync("?fields=title,tags,categories,content&number=100&page=" + pPageNumber).Result;
 
             if (songsResponse.IsSuccessStatusCode)
             {
@@ -104,6 +104,28 @@ namespace DBSetupAndDataSeed
                         String categoryName = HttpUtility.HtmlDecode(song.CategoryName);
                         String content = HttpUtility.HtmlDecode(song.Content);
 
+                        try
+                        {
+                            Category category = (Category)db.Categories.Where(c => c.Name == categoryName).First();
+                            song.Category = category;
+                        }
+                        catch (InvalidOperationException ce)
+                        {
+                            // Got an Invalid category, Add it to 'None'
+                            try
+                            {
+                                Category category = (Category)db.Categories.Where(c => c.Name == "Aucune").First();
+                                song.Category = category;
+                            }
+                            catch (InvalidOperationException e)
+                            {
+                                Category newCategory = new Category();
+                                newCategory.Name = "Aucune";
+                                song.Category = newCategory;
+                                db.SaveChanges();
+                            }
+                        }
+
                         song.Title = HttpUtility.HtmlDecode(song.Title);
 
                         if (artistName == null)
@@ -124,16 +146,6 @@ namespace DBSetupAndDataSeed
                             db.Artists.Add(newArtist);
                             song.Artist = newArtist;
                             db.SaveChanges();
-                        }
-
-                        try
-                        {
-                            Category category = (Category)db.Categories.Where(c => c.Name == categoryName).First();
-                            song.Category = category;
-                        }
-                        catch (InvalidOperationException ce)
-                        {
-                            // Do nothing in this case;  May be we can log an error
                         }
 
                         db.Songs.Add(song);
@@ -176,9 +188,9 @@ namespace DBSetupAndDataSeed
             Document luceneDocument = new Document();
 
             luceneDocument.Add(new Field("Id", pId, Field.Store.YES, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Title", pName, Field.Store.NO, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Category", pCategory == null ? "" : pCategory, Field.Store.NO, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Artist", pArtist == null ? "" : pArtist, Field.Store.NO, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Title", pName, Field.Store.YES, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Category", pCategory == null ? "" : pCategory, Field.Store.YES, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Artist", pArtist == null ? "" : pArtist, Field.Store.YES, Field.Index.ANALYZED));
 
             return luceneDocument;
         }
