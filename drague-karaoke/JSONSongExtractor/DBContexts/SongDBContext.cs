@@ -1,8 +1,6 @@
 ﻿using KaraokeCoreObjects;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using KaraokeCoreObjects.misc;
 
 namespace DBSetupAndDataSeed
 {
@@ -10,7 +8,7 @@ namespace DBSetupAndDataSeed
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=drague-karaoke;Trusted_Connection=True;", 
+            optionsBuilder.UseSqlServer(Constants.CONNECTION_STRING, 
                 b => b.MigrationsAssembly("DBSetupAndDataSeed"));
         }
 

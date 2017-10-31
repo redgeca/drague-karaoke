@@ -12,6 +12,7 @@ using Lucene.Net.Documents;
 using Lucene.Net.Store;
 using Lucene.Net.Analysis;
 using Lucene.Net.Index;
+using KaraokeCoreObjects.misc;
 
 namespace DBSetupAndDataSeed
 {
@@ -70,6 +71,7 @@ namespace DBSetupAndDataSeed
         {
             using(var db = new SongDBContext())
             {
+                /*
                 db.Database.ExecuteSqlCommand("delete from Songs");
                 db.Database.ExecuteSqlCommand("delete from Categories");
                 db.Database.ExecuteSqlCommand("delete from Artists");
@@ -158,9 +160,9 @@ namespace DBSetupAndDataSeed
                     songList = getSongs(repository, pageNumber);
                 }
                 Console.WriteLine("DONE");
-    
-                String indexLocation = @"c:\karaoke\index";
-                Directory indexDirectory = FSDirectory.Open(indexLocation);
+    */
+
+                Directory indexDirectory = FSDirectory.Open(Constants.INDEX_FOLDER);
 
                 Analyzer analyzer = new ASCIIFoldingAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
 
