@@ -15,7 +15,7 @@ namespace TestLucene
         static void Main(string[] args)
         {
 
-            String indexLocation = @"c:\karaoke\index";
+            String indexLocation = @"c:\karaoke\testindex";
             Directory indexDirectory = FSDirectory.Open(indexLocation);
 
             Analyzer analyzer = new ASCIIFoldingAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
@@ -67,6 +67,9 @@ namespace TestLucene
         {
             var escapedTerm = QueryParser.Escape(searchQuery);
             var prefixedTerm = String.Concat("\"", escapedTerm, "\"");
+            var mtQueryParser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, new[] { "Name", "Artist", "Category" }, analyzer);
+
+            var test1 = mtQueryParser.Parse("*él*");
             var qpName = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Name", analyzer);
             var qpArtist = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Artist", analyzer);
             var qpCategory = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Category", analyzer);

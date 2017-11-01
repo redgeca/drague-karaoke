@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBSetupAndDataSeed", "JSONS
 		{F0DFD901-55A5-475D-93E9-3F8C0E8FBE65} = {F0DFD901-55A5-475D-93E9-3F8C0E8FBE65}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestLucene", "TestLucene\TestLucene.csproj", "{32D9336D-085E-4E93-83F4-A476DF91B91C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestLucene", "TestLucene\TestLucene.csproj", "{32D9336D-085E-4E93-83F4-A476DF91B91C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
