@@ -1,14 +1,14 @@
 ﻿@model TestCoreWebApplication.Models.SongRequest
 @{
     ViewData["Title"] = "Karaoké";
+
 }
 
 <ul class="nav nav-tabs">
-<!-- 
     <li role="presentation" class="active">
         <a data-toggle="tab" href="#searchAll">
             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            Tout
+            Mots-clef
         </a>
     </li>
     <li role="presentation">
@@ -17,7 +17,6 @@
             par Artiste
         </a>
     </li>
--->
 </ul>
 
 <form id="select-song-form" method="post" asp-controller="Home">
@@ -39,14 +38,6 @@
                             </div>
                             <input asp-for="songId" type="hidden"/>
                             <input asp-for="title" class="form-control" id="title" name="title" type="text" placeholder="Rechercher une chanson ..." />
-
-                            <script type="text/javascript" language="javascript">
-                                $(document).ready(function () {
-                                    $('#title').autocomplete({
-                                        source: '@Url.Action("Autocomplete", "Home")', { minChars: 3 });
-                            });
-                            </script>
-
                         </div>
                         <div class="form-group">
                             <span asp-validation-for="title" class="text-danger"></span>
@@ -128,3 +119,4 @@
 
     <button class="btn btn-default" type="submit" name="SubmitBtn" asp-action="SubmitBtn">Soumettre</button>
 </form>
+
