@@ -34,7 +34,7 @@ namespace TestCoreWebApplication.Controllers
 
             // Perform a search
             var searcher = new IndexSearcher(indexDirectory, false);
-            var hits_limit = 1000;
+            var hits_limit = 10;
 
             BooleanQuery termQuery = parseQuery(term, analyzer);
 
@@ -53,7 +53,6 @@ namespace TestCoreWebApplication.Controllers
         [HttpPost]
         public ActionResult SubmitBtn(SongRequest songRequest)
       {
-            songRequest.songId = 100;
             if (ModelState.IsValid)
             {
                 string singerName = songRequest.singerName;
@@ -117,7 +116,7 @@ namespace TestCoreWebApplication.Controllers
             BooleanQuery query = new BooleanQuery();
             foreach (Term term in pTerms)
             {
-                query.Add(new PrefixQuery(term), Occur.MUST);
+                query.Add(new PrefixQuery(term), Occur.SHOULD);
             }
 
             return query;
