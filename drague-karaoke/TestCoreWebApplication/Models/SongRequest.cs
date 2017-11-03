@@ -11,4 +11,9 @@ namespace TestCoreWebApplication.Models
         public string singerName { get; set; }
         public string notes { get; set; }
     }
+
+    public class Category
+    {
+        string categoryName { get; set; }
+    }
 }

@@ -15,11 +15,11 @@ namespace TestLucene
         static void Main(string[] args)
         {
 
-            String indexLocation = @"c:\karaoke\testindex";
+            String indexLocation = @"c:\karaoke\index";
             Directory indexDirectory = FSDirectory.Open(indexLocation);
 
             Analyzer analyzer = new ASCIIFoldingAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-
+            /*
             var writer = new IndexWriter(indexDirectory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
 
             // First, we clear index so we won't get duplicates...
@@ -33,20 +33,22 @@ namespace TestLucene
             writer.AddDocument(getSongDocument("6", "Sèche tes pleurs", "Daniel Bélanger", "S"));
 
             writer.Dispose();
-
+            */
             // Perform a search
             var searcher = new IndexSearcher(indexDirectory, false);
             var hits_limit = 1000;
 
             BooleanQuery termQuery = parseQuery("i", analyzer);
+            BooleanQuery fQuery = fuzzyQuery("hania wain", analyzer);
 
             searcher.SetDefaultFieldSortScoring(true, true);
-            ScoreDoc[] hits= searcher.Search(termQuery, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
+            ScoreDoc[] hits = searcher.Search(termQuery, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
+            ScoreDoc[] hits2 = searcher.Search(fQuery, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
 
-            foreach (ScoreDoc hit in hits)
+            foreach (ScoreDoc hit in hits2)
             {
                 var document = searcher.IndexReader.Document(hit.Doc);
-                System.Console.WriteLine(document.ToString());
+                System.Console.WriteLine(document.Get("Title") + " (" + document.Get("Artist") + ") " + hit.Score);
             }
             System.Console.WriteLine(hits.ToString());
         }
@@ -56,7 +58,7 @@ namespace TestLucene
             Document luceneDocument = new Document();
             
             luceneDocument.Add(new Field("Id", pId, Field.Store.YES, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Name", pName, Field.Store.NO, Field.Index.ANALYZED));
+            luceneDocument.Add(new Field("Title", pName, Field.Store.NO, Field.Index.ANALYZED));
             luceneDocument.Add(new Field("Category", pCategory, Field.Store.NO, Field.Index.ANALYZED));
             luceneDocument.Add(new Field("Artist", pArtist, Field.Store.NO, Field.Index.ANALYZED));
 
@@ -67,10 +69,8 @@ namespace TestLucene
         {
             var escapedTerm = QueryParser.Escape(searchQuery);
             var prefixedTerm = String.Concat("\"", escapedTerm, "\"");
-            var mtQueryParser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, new[] { "Name", "Artist", "Category" }, analyzer);
 
-            var test1 = mtQueryParser.Parse("*él*");
-            var qpName = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Name", analyzer);
+            var qpName = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Title", analyzer);
             var qpArtist = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Artist", analyzer);
             var qpCategory = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Category", analyzer);
 
@@ -107,6 +107,16 @@ namespace TestLucene
             }
 
             return query;
+        }
+        public static BooleanQuery fuzzyQuery(string searchTerms, Analyzer pAnalyzer)
+        {
+            var mtQueryParser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, new[] { "Title", "Artist", "Category" }, pAnalyzer);
+ 
+            BooleanQuery resultQuery = new BooleanQuery();
+            resultQuery.Add(new FuzzyQuery(new Term("Artist", "aneil")), Occur.SHOULD);
+            resultQuery.Add(new FuzzyQuery(new Term("Title", "aneel")), Occur.SHOULD);
+            resultQuery.Add(new FuzzyQuery(new Term("Category", "aneel")), Occur.SHOULD);
+            return resultQuery;
         }
     }
 }

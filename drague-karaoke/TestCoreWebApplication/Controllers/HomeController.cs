@@ -5,6 +5,7 @@ using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,18 +37,44 @@ namespace TestCoreWebApplication.Controllers
             var searcher = new IndexSearcher(indexDirectory, false);
             var hits_limit = 10;
 
-            BooleanQuery termQuery = parseQuery(term, analyzer);
+            BooleanQuery finalQuery = getPrefixQuery(term, analyzer);
 
             searcher.SetDefaultFieldSortScoring(true, true);
-            ScoreDoc[] hits = searcher.Search(termQuery, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
+            ScoreDoc[] hits = searcher.Search(finalQuery, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
+            ScoreDoc[] fuzzyHits = searcher.Search(getFuzzyQuery(term, analyzer), null, hits_limit, Sort.RELEVANCE).ScoreDocs;
+
+            List<ScoreDoc> scoreDocs = new List<ScoreDoc>();
+            scoreDocs.AddRange(hits);
+            if (hits.Length < 10)
+            {
+                scoreDocs.AddRange(fuzzyHits);
+            }
+//            var sortedList = scoreDocs.OrderBy(d => d.Score);
 
             List<String> searchResults = new List<String>();
-            foreach (ScoreDoc hit in hits)
+            foreach (ScoreDoc hit in scoreDocs)
             {
                 var document = searcher.IndexReader.Document(hit.Doc);
                 searchResults.Add(document.Get("Title") + " par " + document.Get("Artist"));
             }
-            return Json(searchResults.ToArray());
+            return Json(searchResults.ToArray().Take(10));
+        }
+
+        // Define the list which you have to show in Drop down List
+        public List<SelectListItem> getCategories()
+        {
+            List<SelectListItem> myList = new List<SelectListItem>();
+            var data = new[]{
+                 new SelectListItem{ Value="1",Text="Monday"},
+                 new SelectListItem{ Value="2",Text="Tuesday"},
+                 new SelectListItem{ Value="3",Text="Wednesday"},
+                 new SelectListItem{ Value="4",Text="Thrusday"},
+                 new SelectListItem{ Value="5",Text="Friday"},
+                 new SelectListItem{ Value="6",Text="Saturday"},
+                 new SelectListItem{ Value="7",Text="Sunday"},
+             };
+            myList = data.ToList();
+            return myList;
         }
 
         [HttpPost]
@@ -74,21 +101,14 @@ namespace TestCoreWebApplication.Controllers
             return View("Index");
         }
 
-        private BooleanQuery parseQuery(string searchQuery, Analyzer analyzer)
+        private BooleanQuery getPrefixQuery(string searchQuery, Analyzer analyzer)
         {
             var escapedTerm = QueryParser.Escape(searchQuery);
             var prefixedTerm = String.Concat("\"", escapedTerm, "\"");
-            var mtQueryParser = new MultiFieldQueryParser(Lucene.Net.Util.Version.LUCENE_30, new[] { "Title", "Artist", "Category" }, analyzer);
 
             var qpName = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Title", analyzer);
             var qpArtist = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Artist", analyzer);
             var qpCategory = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Category", analyzer);
-
-            /*
-            qpName.AllowLeadingWildcard = true;
-            qpArtist.AllowLeadingWildcard = true;
-            qpCategory.AllowLeadingWildcard = true;
-            */
 
             Query queryName = qpName.Parse(prefixedTerm);
             Query queryArtist = qpArtist.Parse(prefixedTerm);
@@ -109,6 +129,21 @@ namespace TestCoreWebApplication.Controllers
 
             return termQuery;
         }
+
+        private BooleanQuery getFuzzyQuery(string searchTerms, Analyzer pAnalyzer)
+        {
+            BooleanQuery resultQuery = new BooleanQuery();
+
+            String[] terms = searchTerms.Split(" ");
+            foreach(string term in terms)
+            {
+                resultQuery.Add(new FuzzyQuery(new Term("Artist", term.ToLower())), Occur.SHOULD);
+                resultQuery.Add(new FuzzyQuery(new Term("Title", term.ToLower())), Occur.SHOULD);
+                resultQuery.Add(new FuzzyQuery(new Term("Category", term.ToLower())), Occur.SHOULD);
+            }
+            return resultQuery;
+        }
+
 
         public BooleanQuery getQueryFromTerms(ISet<Term> pTerms)
         {

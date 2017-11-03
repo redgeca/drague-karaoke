@@ -4,27 +4,35 @@
 
 }
 
-<ul class="nav nav-tabs">
-    <li role="presentation" class="active">
-        <a data-toggle="tab" href="#searchAll">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            Mots-clef
-        </a>
-    </li>
-    <li role="presentation">
-        <a data-toggle="tab" href="#searchArtist">
-            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            par Artiste
-        </a>
-    </li>
-</ul>
-
 <form id="select-song-form" method="post" asp-controller="Home">
+    <div class="form-group">
+        <!-- Spacer -->
+    </div>
+    <ul class="nav nav-pills">
+        <li role="presentation" class="active">
+            <a data-toggle="tab" href="#searchAll">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                Mots-clef
+            </a>
+        </li>
+        <li role="presentation">
+            <a data-toggle="tab" href="#searchArtist">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                par Artiste
+            </a>
+        </li>
+        <!--
+        <li role="presentation">
+            <a data-toggle="tab" href="#searchCategory">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                par Catégorie
+            </a>
+        </li>
+            -->
+    </ul>
+
     <div class="tab-content"  >
         <div id="searchAll" class="tab-pane fade in active">
-            <div class="form-group">
-                <!-- Spacer -->
-            </div>
 
             <div class="panel panel-default">
                 <div class="panel-heading">Recherche par Mots-clef</div>
@@ -38,6 +46,8 @@
                             </div>
                             <input asp-for="songId" type="hidden"/>
                             <input asp-for="title" class="form-control" id="title" name="title" type="text" placeholder="Rechercher une chanson ..." />
+    
+
                         </div>
                         <div class="form-group">
                             <span asp-validation-for="title" class="text-danger"></span>
@@ -106,6 +116,17 @@
                     <div class="form-group">
                         <label class="control-label" for="form-group-select">Artiste / Groupe</label>
                         <select class="form-control" id="form-group-select"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="searchCategory" class="tab-pane fade">
+            <div class="panel panel-default">
+                <div class="panel-heading">Recherche par Catégorie</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label" for="form-group-select">Categorie</label>
+                        <select class="form-control" id="form-group-select">@Url.Action("getCategories")</select>
                     </div>
                 </div>
             </div>
