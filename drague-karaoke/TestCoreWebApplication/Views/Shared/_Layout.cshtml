@@ -60,17 +60,25 @@
     </environment>
 
     <script type="text/javascript" language="javascript">
-                                $(function () {
-                                    $('#title').autocomplete({
-                                        source: '@Url.Action("Autocomplete")', minLength:3 })
+        $(function () {
+            $('#title').autocomplete({
+                source: '@Url.Action("KeywordSearch")', minLength:3 })
+        });
+
+        $(function () {
+            $('#artist').autocomplete({
+                source: '@Url.Action("ArtistSearch")', minLength:3 })
         });
 
         $('#title').on('paste autocompleteselect', function () {
             console.log(this.value);
         });
 
-    </script>
+        $('#artist').on('paste autocompleteselect', function () {
+            console.log("Artist : " + this.value);
+        });
 
+    </script>
 
     @RenderSection("Scripts", required: false)
 </body>

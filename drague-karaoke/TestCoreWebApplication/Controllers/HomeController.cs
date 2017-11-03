@@ -27,14 +27,12 @@ namespace TestCoreWebApplication.Controllers
         }
 
         [HttpGet]
-        public ActionResult Autocomplete(string term)
+        public ActionResult KeywordSearch(string term)
         {
             Analyzer analyzer = new ASCIIFoldingAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-            String indexLocation = @"c:\karaoke\index";
-            Directory indexDirectory = FSDirectory.Open(indexLocation);
 
             // Perform a search
-            var searcher = new IndexSearcher(indexDirectory, false);
+            var searcher = getSearcher();
             var hits_limit = 10;
 
             BooleanQuery finalQuery = getPrefixQuery(term, analyzer);
@@ -58,6 +56,60 @@ namespace TestCoreWebApplication.Controllers
                 searchResults.Add(document.Get("Title") + " par " + document.Get("Artist"));
             }
             return Json(searchResults.ToArray().Take(10));
+        }
+
+        private IndexSearcher getSearcher()
+        {
+            String indexLocation = @"c:\karaoke\index";
+            Directory indexDirectory = FSDirectory.Open(indexLocation);
+
+            // Perform a search
+            return new IndexSearcher(indexDirectory, false);
+        }
+
+        [HttpGet]
+        public ActionResult ArtistSearch(string term)
+        {
+            Analyzer analyzer = new ASCIIFoldingAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+            var hits_limit = 5000;
+
+            BooleanQuery finalQuery = getPrefixQuery("Artist", term, analyzer);
+            IndexSearcher searcher = getSearcher();
+
+            searcher.SetDefaultFieldSortScoring(true, true);
+            ScoreDoc[] hits = searcher.Search(finalQuery, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
+            ScoreDoc[] fuzzyHits = searcher.Search(getFuzzyQuery("Artist", term, analyzer), null, hits_limit, Sort.RELEVANCE).ScoreDocs;
+
+            List<String> searchResults = new List<String>();
+            foreach (ScoreDoc hit in hits)
+            {
+                var document = searcher.IndexReader.Document(hit.Doc);
+                string artist = document.Get("Artist");
+                if (!searchResults.Contains(artist))
+                {
+                    searchResults.Add(document.Get("Artist"));
+                }
+            }
+
+            foreach (ScoreDoc hit in fuzzyHits)
+            {
+                var document = searcher.IndexReader.Document(hit.Doc);
+                string artist = document.Get("Artist");
+                if (!searchResults.Contains(artist))
+                {
+                    searchResults.Add(document.Get("Artist"));
+                }
+            }
+
+            searcher.Dispose();
+            return Json(searchResults.ToArray().Take(10));
+        }
+
+
+        [HttpGet]
+        public ActionResult CompleteSelect()
+        {
+            return View();
         }
 
         // Define the list which you have to show in Drop down List
@@ -101,31 +153,40 @@ namespace TestCoreWebApplication.Controllers
             return View("Index");
         }
 
-        private BooleanQuery getPrefixQuery(string searchQuery, Analyzer analyzer)
+        private BooleanQuery getPrefixQuery(string pField, string pSearchQuery, Analyzer pAnalyzer)
         {
-            var escapedTerm = QueryParser.Escape(searchQuery);
+            var escapedTerm = QueryParser.Escape(pSearchQuery);
             var prefixedTerm = String.Concat("\"", escapedTerm, "\"");
 
-            var qpName = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Title", analyzer);
-            var qpArtist = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Artist", analyzer);
-            var qpCategory = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "Category", analyzer);
+            var queryParser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, pField, pAnalyzer);
+            Query query = queryParser.Parse(prefixedTerm);
 
-            Query queryName = qpName.Parse(prefixedTerm);
-            Query queryArtist = qpArtist.Parse(prefixedTerm);
-            Query queryCategory = qpCategory.Parse(prefixedTerm);
-
-            ISet<Term> nameTerms = new HashSet<Term>();
-            ISet<Term> artistTerms = new HashSet<Term>();
-            ISet<Term> categoryTerms = new HashSet<Term>();
-
-            queryName.ExtractTerms(nameTerms);
-            queryArtist.ExtractTerms(artistTerms);
-            queryCategory.ExtractTerms(categoryTerms);
+            ISet<Term> terms = new HashSet<Term>();
+            query.ExtractTerms(terms);
 
             BooleanQuery termQuery = new BooleanQuery();
-            termQuery.Add(getQueryFromTerms(nameTerms), Occur.SHOULD);
-            termQuery.Add(getQueryFromTerms(artistTerms), Occur.SHOULD);
-            termQuery.Add(getQueryFromTerms(categoryTerms), Occur.SHOULD);
+            termQuery.Add(getQueryFromTerms(terms), Occur.SHOULD);
+            return termQuery;
+        }
+
+        private BooleanQuery getFuzzyQuery(string pField, string searchTerms, Analyzer pAnalyzer)
+        {
+            BooleanQuery resultQuery = new BooleanQuery();
+
+            String[] terms = searchTerms.Split(" ");
+            foreach (string term in terms)
+            {
+                resultQuery.Add(new FuzzyQuery(new Term(pField, term.ToLower())), Occur.SHOULD);
+            }
+            return resultQuery;
+        }
+
+        private BooleanQuery getPrefixQuery(string searchQuery, Analyzer analyzer)
+        {
+            BooleanQuery termQuery = new BooleanQuery();
+            termQuery.Add(getPrefixQuery("Title", searchQuery, analyzer), Occur.SHOULD);
+            termQuery.Add(getPrefixQuery("Artist", searchQuery, analyzer), Occur.SHOULD);
+            termQuery.Add(getPrefixQuery("Category", searchQuery, analyzer), Occur.SHOULD);
 
             return termQuery;
         }
@@ -134,13 +195,10 @@ namespace TestCoreWebApplication.Controllers
         {
             BooleanQuery resultQuery = new BooleanQuery();
 
-            String[] terms = searchTerms.Split(" ");
-            foreach(string term in terms)
-            {
-                resultQuery.Add(new FuzzyQuery(new Term("Artist", term.ToLower())), Occur.SHOULD);
-                resultQuery.Add(new FuzzyQuery(new Term("Title", term.ToLower())), Occur.SHOULD);
-                resultQuery.Add(new FuzzyQuery(new Term("Category", term.ToLower())), Occur.SHOULD);
-            }
+            resultQuery.Add(getFuzzyQuery("Artist", searchTerms, pAnalyzer), Occur.SHOULD);
+            resultQuery.Add(getFuzzyQuery("Title", searchTerms, pAnalyzer), Occur.SHOULD);
+            resultQuery.Add(getFuzzyQuery("Category", searchTerms, pAnalyzer), Occur.SHOULD);
+
             return resultQuery;
         }
 
