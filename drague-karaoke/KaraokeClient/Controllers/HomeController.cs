@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Http;
 using KaraokeClient.lucene.analyzers;
 using Lucene.Net.QueryParsers;
 using Lucene.Net.Index;
+using KaraokeClient.contexts;
+using KaraokeCoreObjects;
 
 namespace KaraokeClient.Controllers
 {
@@ -136,14 +138,49 @@ namespace KaraokeClient.Controllers
             if (ModelState.IsValid)
             {
                 string singerName = songRequest.singerName;
+                using (var db = new SongDBContext())
+                {
+                    try
+                    {
+                        string[] fields = songRequest.title.Split(" par ");
+                        String query = fields[0] + fields[1];
+                        Artist artist = (Artist)db.Artists.Where(a => a.Name == fields[1]).First();
+                        Song song = (Song) db.Songs.Where(s => s.Title == fields[0] && s.ArtistId == artist.Id).First();
+                        if (song != null) {
+                            Request request = new KaraokeCoreObjects.Request();
+                            request.SingerName = singerName;
+                            request.SongId = song.Id;
+                            request.Notes = songRequest.notes;
+                            request.RequestTime = DateTime.Now;
+                            db.Requests.Add(request);
+                            db.SaveChanges();
+                        }
 
-                ModelState.Clear();
+                    }
+                    catch (IndexOutOfRangeException ioore)
+                    {
+                        ViewData["SubmitSong"] = "La chanson demandée n'existe pas";
+                        return View("Index", songRequest);
+                    }
+                    catch (InvalidOperationException ioe)
+                    {
+                        ViewData["SubmitSong"] = "La chanson demandée n'existe pas";
+                        return View("Index", songRequest);
+                    }
+                    catch (ArgumentNullException e)
+                    {
+                        ViewData["SubmitSong"] = "La chanson demandée n'existe pas";
+                        return View("Index", songRequest);
+                    }
 
-                ViewData["SubmitSong"] = "Demande effectuée avec succès à " + String.Format("{0:HH:mm:ss}", DateTime.Now);
-                CookieOptions cookieOption = new CookieOptions();
+                    ModelState.Clear();
 
-                cookieOption.Expires = DateTime.Now.AddDays(30);
-                Response.Cookies.Append("SingerName", singerName, cookieOption);
+                    ViewData["SubmitSong"] = "Demande effectuée avec succès à " + String.Format("{0:HH:mm:ss}", DateTime.Now);
+                    CookieOptions cookieOption = new CookieOptions();
+
+                    cookieOption.Expires = DateTime.Now.AddDays(30);
+                    Response.Cookies.Append("SingerName", singerName, cookieOption);
+                }
 
                 SongRequest newRequest = new SongRequest();
                 newRequest.singerName = singerName;
