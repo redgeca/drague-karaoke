@@ -1,0 +1,135 @@
+﻿@model KaraokeClient.Models.SongRequest
+@{
+    ViewData["Title"] = "Karaoké";
+
+}
+
+<form id="select-song-form" method="post" asp-controller="Home">
+    <div class="form-group">
+        <!-- Spacer -->
+    </div>
+    <ul class="nav nav-pills">
+        <li role="presentation" class="active">
+            <a data-toggle="tab" href="#searchAll">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                Mots-clef
+            </a>
+        </li>
+        <li role="presentation">
+            <a data-toggle="tab" href="#searchArtist">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                par Artiste
+            </a>
+        </li>
+        <!--
+        <li role="presentation">
+            <a data-toggle="tab" href="#searchCategory">
+                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                par Catégorie
+            </a>
+        </li>
+            -->
+    </ul>
+
+    <div class="tab-content"  >
+        <div id="searchAll" class="tab-pane fade in active">
+
+            <div class="panel panel-default">
+                <div class="panel-heading">Recherche par Mots-clef</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label" for="form-group-select">Mots-Clef</label>
+
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </div>
+                            <input asp-for="songId" type="hidden" />
+                            <input asp-for="title" class="form-control" id="title" name="title" type="text" placeholder="Rechercher une chanson ..." />
+
+                        </div>
+                        <div class="form-group">
+                            <span asp-validation-for="title" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <!-- Spacer -->
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-user"></span>
+                            </div>
+                            <input asp-for="singerName" class="form-control" id="singername" name="singername" type="text" placeholder="Votre nom...">
+                        </div>
+
+                        <div class="form-group">
+                            <span asp-validation-for="singerName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <!-- Spacer -->
+                        </div>
+
+                        <div class="input-group">
+                            <div class="input-group-addon">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </div>
+                            <textarea asp-for="notes" rows="3" class="form-control" id="notes" placeholder="Notes .... (Augmenter d'un demi-ton, etc)"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="searchArtist" class="tab-pane fade">
+            <div class="panel panel-default">
+                <div class="panel-heading">Recherche par Artiste</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label" for="form-group-select">Artiste / Groupe</label>
+                        <input class="form-control" id="artist" name="artist" type="text" placeholder="Rechercher un artiste / groupe ..." />
+                        <div class="form-group">
+                            <!-- Spacer -->
+                        </div>
+                        <!--
+                        <div class="panel panel-default">
+                            <div class="panel-body" style="max-height:200px ;overflow-y: scroll;">
+                            -->
+
+                        @{
+                            var foo = new List<SelectListItem>
+                            {
+
+                            };
+                        }
+
+                        @Html.DropDownList("Suggestions", foo, new { @id = "artists", @size = 10, @width = 1000, @class = "form-group" })
+                        <!--
+                        </div>
+                           -->
+                        <select class="form-control" id="form-group-select"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="searchCategory" class="tab-pane fade">
+            <div class="panel panel-default">
+                <div class="panel-heading">Recherche par Catégorie</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label" for="form-group-select">Categorie</label>
+                        <select class="form-control" id="form-group-select">@Url.Action("getCategories")</select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <span class="label label-default">@ViewData["SubmitSong"]</span>
+        <!-- Spacer -->
+    </div>
+
+    <button class="btn btn-default" type="submit" name="SubmitBtn" asp-action="SubmitBtn">Soumettre</button>
+</form>
+
