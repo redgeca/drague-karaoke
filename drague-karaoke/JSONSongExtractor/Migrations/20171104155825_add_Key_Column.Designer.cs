@@ -11,9 +11,10 @@ using System;
 namespace DBSetupAndDataSeed.Migrations
 {
     [DbContext(typeof(SongDBContext))]
-    partial class SongDBContextModelSnapshot : ModelSnapshot
+    [Migration("20171104155825_add_Key_Column")]
+    partial class add_Key_Column
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,18 +45,18 @@ namespace DBSetupAndDataSeed.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("KaraokeCoreObjects.KaraokeConfiguration", b =>
+            modelBuilder.Entity("KaraokeCoreObjects.KaraokeState", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("key");
+                    b.Property<bool>("KaraokeStarted");
 
-                    b.Property<string>("value");
+                    b.Property<string>("key");
 
                     b.HasKey("id");
 
-                    b.ToTable("KaraokeConfiguration");
+                    b.ToTable("KaraokeState");
                 });
 
             modelBuilder.Entity("KaraokeCoreObjects.Playlist", b =>

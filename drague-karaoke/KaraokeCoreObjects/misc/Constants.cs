@@ -15,5 +15,11 @@ namespace KaraokeCoreObjects.misc
         public static readonly String ARTIST_FIELD = "Artist";
 
         public static readonly String CATEGORY_FIELD = "Category";
+
+        public static readonly string KARAOKE_RUNNING_FLAG = "KaraokeRunning";
+
+        public static readonly string RUNNING_FLAG = "RUNNING";
+
+        public static readonly string STOPPED_FLAG = "STOPPED";
     }
 }

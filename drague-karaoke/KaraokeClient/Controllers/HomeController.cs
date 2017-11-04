@@ -29,8 +29,9 @@ namespace KaraokeClient.Controllers
                 Boolean running = false;
                 try
                 {
-                    KaraokeState state = db.KaraokeState.First();
-                    if (state.KaraokeStarted == false)
+                    KaraokeConfiguration state = db.KaraokeConfiguration.Where(s => s.key == 
+                        Constants.KARAOKE_RUNNING_FLAG).First();
+                    if (state.value == Constants.STOPPED_FLAG)
                     {
                         return View("NotStarted");
                     }
