@@ -26,21 +26,20 @@ namespace KaraokeClient.Controllers
             // Check if Karaoke is accepting requests
             using (var db = new SongDBContext())
             {
-                Boolean running = false;
                 try
                 {
-                    KaraokeConfiguration state = db.KaraokeConfiguration.Where(s => s.key == 
-                        Constants.KARAOKE_RUNNING_FLAG).First();
+                    KaraokeConfiguration state = db.KaraokeConfiguration.Where(
+                        s => s.key == Constants.KARAOKE_STATE_FLAG).First();
                     if (state.value == Constants.STOPPED_FLAG)
                     {
                         return View("NotStarted");
                     }
                 }
-                catch (InvalidOperationException ioe)
+                catch (InvalidOperationException)
                 {
                     return View("NotStarted");
                 }
-                catch (IndexOutOfRangeException ioore)
+                catch (IndexOutOfRangeException)
                 {
                     return View("NotStarted");
                 }
@@ -183,17 +182,17 @@ namespace KaraokeClient.Controllers
                         }
 
                     }
-                    catch (IndexOutOfRangeException ioore)
+                    catch (IndexOutOfRangeException)
                     {
                         ViewData["SubmitSong"] = "La chanson demandée n'existe pas";
                         return View("Index", songRequest);
                     }
-                    catch (InvalidOperationException ioe)
+                    catch (InvalidOperationException)
                     {
                         ViewData["SubmitSong"] = "La chanson demandée n'existe pas";
                         return View("Index", songRequest);
                     }
-                    catch (ArgumentNullException e)
+                    catch (ArgumentNullException)
                     {
                         ViewData["SubmitSong"] = "La chanson demandée n'existe pas";
                         return View("Index", songRequest);
