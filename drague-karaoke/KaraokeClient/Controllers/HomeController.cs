@@ -23,6 +23,28 @@ namespace KaraokeClient.Controllers
 
         public IActionResult Index()
         {
+            // Check if Karaoke is accepting requests
+            using (var db = new SongDBContext())
+            {
+                Boolean running = false;
+                try
+                {
+                    KaraokeState state = db.KaraokeState.First();
+                    if (state.KaraokeStarted == false)
+                    {
+                        return View("NotStarted");
+                    }
+                }
+                catch (InvalidOperationException ioe)
+                {
+                    return View("NotStarted");
+                }
+                catch (IndexOutOfRangeException ioore)
+                {
+                    return View("NotStarted");
+                }
+            }
+
             String singerNameCookie = Request.Cookies[SINGERNAME_COOKIE];
 
             SongRequest songRequest = new SongRequest();

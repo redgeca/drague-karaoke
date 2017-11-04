@@ -11,9 +11,10 @@ using System;
 namespace DBSetupAndDataSeed.Migrations
 {
     [DbContext(typeof(SongDBContext))]
-    partial class SongDBContextModelSnapshot : ModelSnapshot
+    [Migration("20171104151921_KaraokeStateTable")]
+    partial class KaraokeStateTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

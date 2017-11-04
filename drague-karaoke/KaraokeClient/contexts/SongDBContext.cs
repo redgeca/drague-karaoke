@@ -25,5 +25,7 @@ namespace KaraokeClient.contexts
         public DbSet<Request> Requests { get; set; }
         public DbSet<Playlist> Playlists { get; set; }
 
+        public DbSet<KaraokeState> KaraokeState { get; set; }
+
     }
 }

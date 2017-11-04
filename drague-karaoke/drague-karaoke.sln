@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KaraokeClient", "KaraokeCli
 		{F0DFD901-55A5-475D-93E9-3F8C0E8FBE65} = {F0DFD901-55A5-475D-93E9-3F8C0E8FBE65}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAuthentication", "TestAuthentication\TestAuthentication.csproj", "{7F97E2B8-288A-4828-8910-7465D2AA66F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestAuthentication", "TestAuthentication\TestAuthentication.csproj", "{7F97E2B8-288A-4828-8910-7465D2AA66F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
