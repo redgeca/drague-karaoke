@@ -13,14 +13,17 @@ using Lucene.Net.QueryParsers;
 using Lucene.Net.Index;
 using KaraokeClient.contexts;
 using KaraokeCoreObjects;
+using KaraokeCoreObjects.misc;
 
 namespace KaraokeClient.Controllers
 {
     public class HomeController : Controller
     {
+        private static readonly String SINGERNAME_COOKIE = "singerName";
+
         public IActionResult Index()
         {
-            String singerNameCookie = Request.Cookies["SingerName"];
+            String singerNameCookie = Request.Cookies[SINGERNAME_COOKIE];
 
             SongRequest songRequest = new SongRequest();
             songRequest.singerName = singerNameCookie;
@@ -50,20 +53,19 @@ namespace KaraokeClient.Controllers
             {
                 scoreDocs.AddRange(fuzzyHits);
             }
-            //            var sortedList = scoreDocs.OrderBy(d => d.Score);
 
             List<String> searchResults = new List<String>();
             foreach (ScoreDoc hit in scoreDocs)
             {
                 var document = searcher.IndexReader.Document(hit.Doc);
-                searchResults.Add(document.Get("Title") + " par " + document.Get("Artist"));
+                searchResults.Add(document.Get(Constants.TITLE_FIELD) + " par " + document.Get(Constants.ARTIST_FIELD));
             }
             return Json(searchResults.ToArray().Take(10));
         }
 
         private IndexSearcher getSearcher()
         {
-            String indexLocation = @"c:\karaoke\index";
+            String indexLocation = Constants.INDEX_FOLDER;
             Directory indexDirectory = FSDirectory.Open(indexLocation);
 
             // Perform a search
@@ -76,31 +78,32 @@ namespace KaraokeClient.Controllers
             Analyzer analyzer = new ASCIIFoldingAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
             var hits_limit = 5000;
 
-            BooleanQuery finalQuery = getPrefixQuery("Artist", term, analyzer);
+            BooleanQuery finalQuery = getPrefixQuery(Constants.ARTIST_FIELD, term, analyzer);
             IndexSearcher searcher = getSearcher();
 
             searcher.SetDefaultFieldSortScoring(true, true);
             ScoreDoc[] hits = searcher.Search(finalQuery, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
-            ScoreDoc[] fuzzyHits = searcher.Search(getFuzzyQuery("Artist", term, analyzer), null, hits_limit, Sort.RELEVANCE).ScoreDocs;
+            ScoreDoc[] fuzzyHits = searcher.Search(getFuzzyQuery(Constants.ARTIST_FIELD, term, analyzer), 
+                null, hits_limit, Sort.RELEVANCE).ScoreDocs;
 
             List<String> searchResults = new List<String>();
             foreach (ScoreDoc hit in hits)
             {
                 var document = searcher.IndexReader.Document(hit.Doc);
-                string artist = document.Get("Artist");
+                string artist = document.Get(Constants.ARTIST_FIELD);
                 if (!searchResults.Contains(artist))
                 {
-                    searchResults.Add(document.Get("Artist"));
+                    searchResults.Add(document.Get(Constants.ARTIST_FIELD));
                 }
             }
 
             foreach (ScoreDoc hit in fuzzyHits)
             {
                 var document = searcher.IndexReader.Document(hit.Doc);
-                string artist = document.Get("Artist");
+                string artist = document.Get(Constants.ARTIST_FIELD);
                 if (!searchResults.Contains(artist))
                 {
-                    searchResults.Add(document.Get("Artist"));
+                    searchResults.Add(document.Get(Constants.ARTIST_FIELD));
                 }
             }
 
@@ -179,7 +182,7 @@ namespace KaraokeClient.Controllers
                     CookieOptions cookieOption = new CookieOptions();
 
                     cookieOption.Expires = DateTime.Now.AddDays(30);
-                    Response.Cookies.Append("SingerName", singerName, cookieOption);
+                    Response.Cookies.Append(SINGERNAME_COOKIE, singerName, cookieOption);
                 }
 
                 SongRequest newRequest = new SongRequest();
@@ -222,9 +225,9 @@ namespace KaraokeClient.Controllers
         private BooleanQuery getPrefixQuery(string searchQuery, Analyzer analyzer)
         {
             BooleanQuery termQuery = new BooleanQuery();
-            termQuery.Add(getPrefixQuery("Title", searchQuery, analyzer), Occur.SHOULD);
-            termQuery.Add(getPrefixQuery("Artist", searchQuery, analyzer), Occur.SHOULD);
-            termQuery.Add(getPrefixQuery("Category", searchQuery, analyzer), Occur.SHOULD);
+            termQuery.Add(getPrefixQuery(Constants.TITLE_FIELD, searchQuery, analyzer), Occur.SHOULD);
+            termQuery.Add(getPrefixQuery(Constants.ARTIST_FIELD, searchQuery, analyzer), Occur.SHOULD);
+            termQuery.Add(getPrefixQuery(Constants.CATEGORY_FIELD, searchQuery, analyzer), Occur.SHOULD);
 
             return termQuery;
         }
@@ -233,9 +236,9 @@ namespace KaraokeClient.Controllers
         {
             BooleanQuery resultQuery = new BooleanQuery();
 
-            resultQuery.Add(getFuzzyQuery("Artist", searchTerms, pAnalyzer), Occur.SHOULD);
-            resultQuery.Add(getFuzzyQuery("Title", searchTerms, pAnalyzer), Occur.SHOULD);
-            resultQuery.Add(getFuzzyQuery("Category", searchTerms, pAnalyzer), Occur.SHOULD);
+            resultQuery.Add(getFuzzyQuery(Constants.ARTIST_FIELD, searchTerms, pAnalyzer), Occur.SHOULD);
+            resultQuery.Add(getFuzzyQuery(Constants.TITLE_FIELD, searchTerms, pAnalyzer), Occur.SHOULD);
+            resultQuery.Add(getFuzzyQuery(Constants.CATEGORY_FIELD, searchTerms, pAnalyzer), Occur.SHOULD);
 
             return resultQuery;
         }

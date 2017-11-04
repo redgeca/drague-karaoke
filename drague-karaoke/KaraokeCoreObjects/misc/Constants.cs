@@ -9,5 +9,11 @@ namespace KaraokeCoreObjects.misc
         public static readonly String INDEX_FOLDER = @"C:\karaoke\index";
 
         public static readonly String CONNECTION_STRING = @"Server=.\SQLEXPRESS;Database=drague-karaoke;Trusted_Connection=True;";
+
+        public static readonly String TITLE_FIELD = "Title";
+
+        public static readonly String ARTIST_FIELD = "Artist";
+
+        public static readonly String CATEGORY_FIELD = "Category";
     }
 }

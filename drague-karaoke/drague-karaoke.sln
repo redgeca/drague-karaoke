@@ -24,10 +24,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBSetupAndDataSeed", "JSONS
 		{F0DFD901-55A5-475D-93E9-3F8C0E8FBE65} = {F0DFD901-55A5-475D-93E9-3F8C0E8FBE65}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KaraokeClient", "KaraokeClient\KaraokeClient.csproj", "{B99F2583-50F4-4E70-8BD3-503B8977587E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KaraokeClient", "KaraokeClient\KaraokeClient.csproj", "{B99F2583-50F4-4E70-8BD3-503B8977587E}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F0DFD901-55A5-475D-93E9-3F8C0E8FBE65} = {F0DFD901-55A5-475D-93E9-3F8C0E8FBE65}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAuthentication", "TestAuthentication\TestAuthentication.csproj", "{7F97E2B8-288A-4828-8910-7465D2AA66F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{B99F2583-50F4-4E70-8BD3-503B8977587E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B99F2583-50F4-4E70-8BD3-503B8977587E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B99F2583-50F4-4E70-8BD3-503B8977587E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F97E2B8-288A-4828-8910-7465D2AA66F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F97E2B8-288A-4828-8910-7465D2AA66F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F97E2B8-288A-4828-8910-7465D2AA66F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F97E2B8-288A-4828-8910-7465D2AA66F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
