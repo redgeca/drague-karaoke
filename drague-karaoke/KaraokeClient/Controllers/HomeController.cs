@@ -169,7 +169,7 @@ namespace KaraokeClient.Controllers
                 {
                     try
                     {
-                        string[] fields = songRequest.title.Split(" par ");
+                        string[] fields = songRequest.title.Trim().Split(" par ");
                         String query = fields[0] + fields[1];
                         Artist artist = (Artist)db.Artists.Where(a => a.Name == fields[1]).First();
                         Song song = (Song) db.Songs.Where(s => s.Title == fields[0] && s.ArtistId == artist.Id).First();
