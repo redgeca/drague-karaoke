@@ -188,11 +188,19 @@ namespace DBSetupAndDataSeed
         private static Document getSongDocument(String pId, String pName, String pArtist, String pCategory)
         {
             Document luceneDocument = new Document();
+            Field idField = new Field("Id", pId, Field.Store.YES, Field.Index.ANALYZED);
+            Field titleField = new Field("Title", pName, Field.Store.YES, Field.Index.ANALYZED);
+            Field categoryField = new Field("Category", pCategory == null ? "" : pCategory, Field.Store.YES, Field.Index.ANALYZED);
+            Field artistField = new Field("Artist", pArtist == null ? "" : pArtist, Field.Store.YES, Field.Index.ANALYZED);
 
-            luceneDocument.Add(new Field("Id", pId, Field.Store.YES, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Title", pName, Field.Store.YES, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Category", pCategory == null ? "" : pCategory, Field.Store.YES, Field.Index.ANALYZED));
-            luceneDocument.Add(new Field("Artist", pArtist == null ? "" : pArtist, Field.Store.YES, Field.Index.ANALYZED));
+            titleField.Boost = 5;
+            artistField.Boost = 3;
+            categoryField.Boost = 1;
+
+            luceneDocument.Add(idField);
+            luceneDocument.Add(titleField);
+            luceneDocument.Add(categoryField);
+            luceneDocument.Add(artistField);
 
             return luceneDocument;
         }

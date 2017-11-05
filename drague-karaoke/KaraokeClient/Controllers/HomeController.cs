@@ -63,9 +63,11 @@ namespace KaraokeClient.Controllers
             var searcher = getSearcher();
             var hits_limit = 10;
 
-            BooleanQuery finalQuery = getPrefixQuery(term, analyzer);
+            BooleanQuery finalQuery = new BooleanQuery();
 
+            finalQuery.Add(getPrefixQuery(term, analyzer), Occur.SHOULD);
             searcher.SetDefaultFieldSortScoring(true, true);
+
             ScoreDoc[] hits = searcher.Search(finalQuery, null, hits_limit, Sort.RELEVANCE).ScoreDocs;
             ScoreDoc[] fuzzyHits = searcher.Search(getFuzzyQuery(term, analyzer), null, hits_limit, Sort.RELEVANCE).ScoreDocs;
 
@@ -100,7 +102,7 @@ namespace KaraokeClient.Controllers
             Analyzer analyzer = new ASCIIFoldingAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
             var hits_limit = 5000;
 
-            BooleanQuery finalQuery = getPrefixQuery(Constants.ARTIST_FIELD, term, analyzer);
+            BooleanQuery finalQuery = getPrefixQuery(Constants.ARTIST_FIELD, 3, term, analyzer);
             IndexSearcher searcher = getSearcher();
 
             searcher.SetDefaultFieldSortScoring(true, true);
@@ -216,7 +218,7 @@ namespace KaraokeClient.Controllers
             return View("Index");
         }
 
-        private BooleanQuery getPrefixQuery(string pField, string pSearchQuery, Analyzer pAnalyzer)
+        private BooleanQuery getPrefixQuery(string pField, float pBoost, string pSearchQuery, Analyzer pAnalyzer)
         {
             var escapedTerm = QueryParser.Escape(pSearchQuery);
             var prefixedTerm = String.Concat("\"", escapedTerm, "\"");
@@ -229,6 +231,7 @@ namespace KaraokeClient.Controllers
 
             BooleanQuery termQuery = new BooleanQuery();
             termQuery.Add(getQueryFromTerms(terms), Occur.SHOULD);
+            termQuery.Boost = pBoost;
             return termQuery;
         }
 
@@ -247,9 +250,9 @@ namespace KaraokeClient.Controllers
         private BooleanQuery getPrefixQuery(string searchQuery, Analyzer analyzer)
         {
             BooleanQuery termQuery = new BooleanQuery();
-            termQuery.Add(getPrefixQuery(Constants.TITLE_FIELD, searchQuery, analyzer), Occur.SHOULD);
-            termQuery.Add(getPrefixQuery(Constants.ARTIST_FIELD, searchQuery, analyzer), Occur.SHOULD);
-            termQuery.Add(getPrefixQuery(Constants.CATEGORY_FIELD, searchQuery, analyzer), Occur.SHOULD);
+            termQuery.Add(getPrefixQuery(Constants.TITLE_FIELD, 15, searchQuery, analyzer), Occur.SHOULD);
+            termQuery.Add(getPrefixQuery(Constants.ARTIST_FIELD, 5, searchQuery, analyzer), Occur.SHOULD);
+            termQuery.Add(getPrefixQuery(Constants.CATEGORY_FIELD, 1, searchQuery, analyzer), Occur.SHOULD);
 
             return termQuery;
         }
