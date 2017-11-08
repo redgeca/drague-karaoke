@@ -29,8 +29,8 @@ namespace KaraokeClient.Controllers
                 try
                 {
                     KaraokeConfiguration state = db.KaraokeConfiguration.Where(
-                        s => s.key == Constants.KARAOKE_STATE_FLAG).First();
-                    if (state.value == Constants.STOPPED_FLAG)
+                        s => s.key == Constants.KARAOKE_STATE_FLAG).FirstOrDefault();
+                    if (state == null || state.value == Constants.STOPPED_FLAG)
                     {
                         return View("NotStarted");
                     }
