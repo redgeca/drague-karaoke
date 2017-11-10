@@ -22,7 +22,7 @@ namespace KaraokeServices.Controllers
             dbContext = pContext;
         }
 
-        //        [Authorize(Roles="animation,admin")]
+        //        [Authorize(Roles="animation,admin,DJ")]
         [HttpGet]
         public ActionResult GetPlaylists()
         {
@@ -33,7 +33,7 @@ namespace KaraokeServices.Controllers
             return Ok(actualPlaylist);
         }
 
-        //        [Authorize(Roles="animation,admin")]
+        //        [Authorize(Roles="animation,admin,DJ")]
         [HttpGet("{id}")]
         public ActionResult GetPlaylists(int id)
         {
@@ -156,7 +156,7 @@ namespace KaraokeServices.Controllers
             return Ok(entry);
         }
 
-        //        [Authorize(Roles="animation,admin")]
+        //        [Authorize(Roles="admin,DJ,animation")]
         [HttpDelete]
         public ActionResult MarkAsDone(int id, [FromBody] string pDelete)
         {
