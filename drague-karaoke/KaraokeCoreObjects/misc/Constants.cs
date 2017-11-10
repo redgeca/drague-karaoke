@@ -23,5 +23,7 @@ namespace KaraokeCoreObjects.misc
         public const string STOPPED_FLAG = "STOPPED";
 
         public const string LAST_STARTED_FLAG = "LastStarted";
+
+        public const string DELETE_COMMAND = "DELETE";
     }
 }

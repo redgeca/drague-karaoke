@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using KaraokeServices.Data;
 using Microsoft.EntityFrameworkCore;
 using KaraokeCoreObjects;
+using KaraokeCoreObjects.misc;
 
 namespace KaraokeServices.Controllers
 {
@@ -48,6 +49,64 @@ namespace KaraokeServices.Controllers
             return Ok(playlistEntry);
         }
 
+        //        [Authorize(Roles="animation,admin")]
+        [HttpPut]
+        public ActionResult ChangeOrder(int id, [FromBody] int pNewPosition)
+        {
+            Playlist request = dbContext.Playlists.Where(s => s.Id == id).FirstOrDefault();
+
+            if (pNewPosition < 1)
+            {
+                return BadRequest("Invalid position");
+            }
+
+            // Request desn't exist in playlist...  Return an error
+            if (request == null)
+            {
+                return BadRequest("Request doesn't exist");
+            }
+
+            // Position cannot be greater than count play song
+            int totalCount = dbContext.Playlists.Where(p => p.IsDone == 0).Count();
+            if (pNewPosition > totalCount)
+            {
+                pNewPosition = totalCount;
+            }
+
+            int from = request.Order;
+            int to = pNewPosition;
+            List<Playlist> orderPlaylist = dbContext.Playlists
+                .Where(p => p.Order >= Math.Min(from, to) 
+                    && p.Order <= Math.Max(from, to)
+                    && p.IsDone == 0)
+                .OrderBy(p => p.Order).ToList();
+
+            int position = Math.Min(from, to);
+            foreach (Playlist song in orderPlaylist)
+            {
+                if (from < to)
+                {
+                    if (song.Order == from)
+                    {
+                        continue;
+                    }
+                    song.Order = position;
+                    dbContext.Playlists.Update(song);
+                    position++;
+                } else
+                {
+                    position++;
+                    song.Order = position;
+                    dbContext.Playlists.Update(song);
+                }
+            }
+
+            request.Order = pNewPosition;
+            dbContext.Playlists.Update(request);
+            dbContext.SaveChanges();
+
+            return Ok(request);
+        }
 
         //        [Authorize(Roles="animation,admin")]
         [HttpPost]
@@ -72,7 +131,6 @@ namespace KaraokeServices.Controllers
             {
                 pPosition = totalCount + 1;
             }
-
 
             List<Playlist> orderPlaylist = dbContext.Playlists
                 .Where(p => p.Order >= pPosition && p.IsDone == 0)
@@ -100,7 +158,7 @@ namespace KaraokeServices.Controllers
 
         //        [Authorize(Roles="animation,admin")]
         [HttpDelete]
-        public ActionResult MarkAsDone(int id)
+        public ActionResult MarkAsDone(int id, [FromBody] string pDelete)
         {
             Playlist entry = dbContext.Playlists
                 .Include(p => p.Request)
@@ -112,7 +170,13 @@ namespace KaraokeServices.Controllers
             }
 
             dbContext.Playlists.Remove(entry);
-            dbContext.Requests.Remove(entry.Request);
+
+            // a DELETE commad in the body indicates that We want to remove the request also, as the song was sang
+            // Without a DELETE command is just a remove from Playlist (and put back in requests)
+            if (pDelete != null && pDelete.Equals(Constants.DELETE_COMMAND))
+            { 
+                dbContext.Requests.Remove(entry.Request);
+            }
             dbContext.SaveChanges();
 
             List<Playlist> orderPlaylist = dbContext.Playlists
